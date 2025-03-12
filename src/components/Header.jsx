@@ -43,7 +43,7 @@ const Header = () => {
                 <MDBNavbarLink href="/">Home</MDBNavbarLink>
               </MDBNavbarItem>
               <MDBNavbarItem>
-                <MDBNavbarLink href="/propriedades">Instituições</MDBNavbarLink>
+                <MDBNavbarLink href="/instituicoes">Instituições</MDBNavbarLink>
               </MDBNavbarItem>
               <MDBNavbarItem>
                 <MDBNavbarLink href="/sobre">Sobre</MDBNavbarLink>
