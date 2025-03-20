@@ -19,7 +19,7 @@ const Footer = () => {
             <MDBRow className="mt-3 pt-3">
               <MDBCol md="3" lg="4" xl="3" className="mx-auto mb-4">
                 <h6 className="text-uppercase fw-bold mb-4">
-                  <MDBIcon color="secondary" icon="tractor" className="me-3" />
+                  <MDBIcon color="secondary" icon="book" className="me-3" />
                   EducaBrasil
                 </h6>
                 <p>
@@ -58,7 +58,7 @@ const Footer = () => {
         >
           © 2021 Copyright:
           <a className="text-reset fw-bold" href="https://mdbootstrap.com/">
-            MDBootstrap.com
+            SilvaDev
           </a>
         </div>
       </MDBFooter>

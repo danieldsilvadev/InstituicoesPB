@@ -8,49 +8,61 @@ import {
 import { useEffect, useState } from 'react';
 import Pagination from 'react-bootstrap/Pagination';
 import { toast } from 'react-toastify';
+import useInstituicao from '../context/InstituicaoContext';
 
 const InstituicoesTable = () => {
-  const [propriedades, setPropriedades] = useState([]);
+  let { instituicoes, setInstituicoes } = useInstituicao();
   const [paginaAtual, setPaginaAtual] = useState(1);
 
   const itemsPorPag = 20;
   const pagParaVer = 10;
 
-  useEffect(() => {
+  const getInstituicoes = (event) => {
     fetch('http://localhost:3000/instituicoes')
       .then((response) => response.json())
-      .then((data) => setPropriedades(data))
-      .catch(() => console.log('Erro ao carregar os dados.'));
-  }, []);
+      .then((data) => {
+        setInstituicoes([...data]);
+      })
+      .catch((error) => {
+        console.log('Deu erro!');
+      });
+  };
+
+  useEffect(getInstituicoes, []);
+
 
   const handleDelete = (id) => {
-      fetch(`http://localhost:3000/instituicoes/${id}`, {
-        method: 'DELETE',
-        mode: 'cors',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
+    fetch(`http://localhost:3000/instituicoes/${id}`, {
+      method: 'DELETE',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Erro ao excluir o item');
+        }
+        return response.text(); // DELETE geralmente não retorna JSON
       })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Erro ao excluir o item');
-          }
-          return response.json();
-        })
-        .then(() => {
-          toast.success(`Instituição com ID ${id} excluída com sucesso!`);
-        })
-        .catch((error) => {
-          toast.error('Erro ao excluir a instituição:', error);
-        });
-    };
+      .then(() => {
+        toast.success(`Instituição com ID ${id} excluída com sucesso!`);
+        
+        // Atualiza a tabela removendo a instituição da lista
+        setInstituicoes((prevInstituicoes) => prevInstituicoes.filter((item) => item.id !== id));
+      })
+      .catch((error) => {
+        toast.error(`Erro ao excluir a instituição: ${error.message}`);
+      });
+  };
+  
 
 
-  const totalPaginas = Math.ceil(propriedades.length / itemsPorPag);
+  const totalPaginas = Math.ceil(instituicoes.length / itemsPorPag);
   const iFinal = paginaAtual * itemsPorPag;
   const iPrimeiro = iFinal - itemsPorPag;
-  const itemAtual = propriedades.slice(iPrimeiro, iFinal);
+  const itemAtual = instituicoes.slice(iPrimeiro, iFinal);
 
   const paginas = (pagNum) => setPaginaAtual(pagNum);
 
@@ -73,20 +85,20 @@ const InstituicoesTable = () => {
           </tr>
         </MDBTableHead>
         <MDBTableBody style={{ fontSize: '11px', fontWeight: 'lighter' }}>
-          {itemAtual.map((propriedade, i) => (
+          {itemAtual.map((instituicoes, i) => (
             <tr key={i}>
-              <td>{propriedade.NO_REGIAO}</td>
-              <td>{propriedade.SG_UF}</td>
-              <td>{propriedade.NO_MUNICIPIO}</td>
-              <td>{propriedade.NO_MESORREGIAO}</td>
-              <td>{propriedade.NO_MICRORREGIAO}</td>
-              <td>{propriedade.NO_ENTIDADE}</td>
-              <td>{propriedade.QT_MAT_BAS}</td>
+              <td>{instituicoes.NO_REGIAO}</td>
+              <td>{instituicoes.SG_UF}</td>
+              <td>{instituicoes.NO_MUNICIPIO}</td>
+              <td>{instituicoes.NO_MESORREGIAO}</td>
+              <td>{instituicoes.NO_MICRORREGIAO}</td>
+              <td>{instituicoes.NO_ENTIDADE}</td>
+              <td>{instituicoes.QT_MAT_BAS}</td>
               <td>
                 <MDBBtn floating tag="a" className="mx-2">
                   <MDBIcon fas icon="pen" />
                 </MDBBtn>
-                <MDBBtn floating tag="a" className="mx-2" color="danger" onClick={() => handleDelete(propriedade.id)}>
+                <MDBBtn floating tag="a" className="mx-2" color="danger" onClick={() => handleDelete(instituicoes.id)}>
                   <MDBIcon fas icon="trash-alt" />
                 </MDBBtn>
               </td>
